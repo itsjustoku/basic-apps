@@ -12,17 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-         # Add the following line to specify Node.js version 16
-        env:
-          NODE_VERSION: 16
 
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           java-version: '11'
-          # Add the following line to specify Node.js version 16
-        env:
-          NODE_VERSION: 16
 
       - name: Decode Keystore Secret
         run: |
