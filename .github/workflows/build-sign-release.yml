@@ -1,0 +1,61 @@
+name: Build, Sign, and Release APK
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-sign-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Decode Keystore Secret
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" > my-release-key.keystore.base64
+          base64 -d -i my-release-key.keystore.base64 -o my-release-key.keystore
+        shell: bash
+
+      - name: Build and Sign APK
+        run: |
+          ./gradlew assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk $GITHUB_WORKSPACE/$GITHUB_REPOSITORY.apk
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+
+      - name: Create ZIP Archive
+        run: |
+          zip -r "Source code.zip" $GITHUB_REPOSITORY.apk
+        working-directory: ${{ github.workspace }}
+
+      - name: Create TAR.GZ Archive
+        run: |
+          tar -czvf "Source code.tar.gz" $GITHUB_REPOSITORY.apk
+        working-directory: ${{ github.workspace }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            $GITHUB_REPOSITORY.apk
+            "Source code.zip"
+            "Source code.tar.gz"
+          tag_name: v1.0
+          release_name: JetTipApp 1.0  # Replace with your desired release name
+          body: |
+            - Other Changes: Miscellaneous updates and optimizations
+
+      - name: Remove Keystore Files
+        run: |
+          rm -f my-release-key.keystore my-release-key.keystore.base64
+        shell: bash
