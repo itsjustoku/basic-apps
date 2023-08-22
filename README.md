@@ -1,2 +1,2 @@
-# Basic Apps
-Just created simple apps with Jetpack Compose
+# JetTipApp
+A simple tipping app made with Jetpack Compose
