@@ -28,18 +28,18 @@ jobs:
       - name: Build and Sign APK
         run: |
           ./gradlew assembleRelease
-          cp app/build/outputs/apk/release/app-release.apk $GITHUB_WORKSPACE/$GITHUB_REPOSITORY.apk
+          cp app/build/outputs/apk/release/app-release.apk $GITHUB_WORKSPACE/JetTipApp.apk
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
 
       - name: Create ZIP Archive
         run: |
-          zip -r "Source code.zip" $GITHUB_REPOSITORY.apk
+          zip -r "Source code.zip" JetTipApp.apk
         working-directory: ${{ github.workspace }}
 
       - name: Create TAR.GZ Archive
         run: |
-          tar -czvf "Source code.tar.gz" $GITHUB_REPOSITORY.apk
+          tar -czvf "Source code.tar.gz" JetTipApp.apk
         working-directory: ${{ github.workspace }}
 
       - name: Create Release
@@ -48,7 +48,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            $GITHUB_REPOSITORY.apk
+            JetTipApp.apk
             "Source code.zip"
             "Source code.tar.gz"
           tag_name: v1.0
