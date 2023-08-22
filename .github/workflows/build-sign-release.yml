@@ -22,7 +22,7 @@ jobs:
       - name: Decode Keystore Secret
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" > my-release-key.keystore.base64
-          base64 -d -i my-release-key.keystore.base64 my-release-key.keystore
+          base64 -d -i my-release-key.keystore.base64 > my-release-key.keystore
         shell: bash
 
       - name: Build and Sign APK
