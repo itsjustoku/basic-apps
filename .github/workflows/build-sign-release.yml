@@ -51,13 +51,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            JetTipApp.apk
             Source code.zip
             Source code.tar.gz
           tag_name: v1.0
           release_name: JetTipApp 1.0  # Replace with your desired release name
           body: |
-            - Other Changes: Miscellaneous updates and optimizations
+            - A basic tipping app calculator created with JetPack Compose
+
+      - name: Upload APK as Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: $GITHUB_WORKSPACE/JetTipApp.apk
+          asset_name: JetTipApp.apk
+          asset_content_type: application/vnd.android.package-archive
 
       - name: Remove Keystore Files
         run: |
